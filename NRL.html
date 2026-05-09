@@ -1,0 +1,1046 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TEAM VOLTIX</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&family=Rajdhani:wght@300;400;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #050810;
+    --surface: #0a1020;
+    --panel: #0d1628;
+    --accent: #00f5ff;
+    --accent2: #ff2d78;
+    --accent3: #7b2fff;
+    --text: #ccd6f6;
+    --muted: #5a7090;
+    --glow: 0 0 20px rgba(0,245,255,0.4);
+    --glow2: 0 0 20px rgba(255,45,120,0.4);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Rajdhani', sans-serif;
+    overflow-x: hidden;
+    cursor: none;
+  }
+
+  /* Custom cursor */
+  .cursor {
+    width: 12px; height: 12px;
+    background: var(--accent);
+    border-radius: 50%;
+    position: fixed;
+    pointer-events: none;
+    z-index: 9999;
+    transform: translate(-50%, -50%);
+    transition: transform 0.1s, width 0.2s, height 0.2s;
+    mix-blend-mode: screen;
+  }
+  .cursor-ring {
+    width: 36px; height: 36px;
+    border: 1px solid var(--accent);
+    border-radius: 50%;
+    position: fixed;
+    pointer-events: none;
+    z-index: 9998;
+    transform: translate(-50%, -50%);
+    transition: all 0.15s ease;
+    opacity: 0.5;
+  }
+
+  /* Noise overlay */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 1000;
+    opacity: 0.5;
+  }
+
+  /* Grid background */
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(0,245,255,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,245,255,0.03) 1px, transparent 1px);
+    background-size: 60px 60px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 500;
+    padding: 18px 48px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid rgba(0,245,255,0.08);
+    backdrop-filter: blur(20px);
+    background: rgba(5,8,16,0.7);
+  }
+
+  .nav-logo {
+    font-family: 'Orbitron', monospace;
+    font-size: 1.4rem;
+    font-weight: 900;
+    letter-spacing: 0.15em;
+    color: var(--accent);
+    text-shadow: var(--glow);
+    position: relative;
+  }
+  .nav-logo span { color: var(--accent2); }
+
+  .nav-links {
+    display: flex;
+    gap: 36px;
+    list-style: none;
+  }
+  .nav-links a {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.75rem;
+    color: var(--muted);
+    text-decoration: none;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    transition: color 0.2s;
+  }
+  .nav-links a:hover { color: var(--accent); text-shadow: var(--glow); }
+
+  /* ── HERO ── */
+  #hero {
+    position: relative;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 120px 24px 80px;
+    overflow: hidden;
+    z-index: 1;
+  }
+
+  .hero-eyebrow {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.5em;
+    color: var(--accent);
+    text-transform: uppercase;
+    margin-bottom: 24px;
+    opacity: 0;
+    animation: fadeUp 0.8s 0.2s forwards;
+  }
+
+  .hero-title {
+    font-family: 'Orbitron', monospace;
+    font-size: clamp(4rem, 12vw, 9rem);
+    font-weight: 900;
+    line-height: 0.9;
+    letter-spacing: -0.02em;
+    margin-bottom: 32px;
+    opacity: 0;
+    animation: fadeUp 0.8s 0.4s forwards;
+  }
+  .hero-title .line1 { display: block; color: #fff; }
+  .hero-title .line2 {
+    display: block;
+    background: linear-gradient(135deg, var(--accent), var(--accent3));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .hero-sub {
+    font-size: 1.1rem;
+    font-weight: 300;
+    color: var(--muted);
+    max-width: 520px;
+    line-height: 1.7;
+    margin-bottom: 48px;
+    opacity: 0;
+    animation: fadeUp 0.8s 0.6s forwards;
+  }
+
+  .hero-cta {
+    display: flex;
+    gap: 16px;
+    opacity: 0;
+    animation: fadeUp 0.8s 0.8s forwards;
+  }
+
+  .btn {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.75rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    padding: 14px 32px;
+    border: none;
+    cursor: none;
+    transition: all 0.3s;
+    text-decoration: none;
+  }
+  .btn-primary {
+    background: var(--accent);
+    color: var(--bg);
+    clip-path: polygon(8px 0%, 100% 0%, calc(100% - 8px) 100%, 0% 100%);
+  }
+  .btn-primary:hover {
+    background: #fff;
+    box-shadow: var(--glow);
+    transform: translateY(-2px);
+  }
+  .btn-ghost {
+    background: transparent;
+    color: var(--accent);
+    border: 1px solid rgba(0,245,255,0.3);
+    clip-path: polygon(8px 0%, 100% 0%, calc(100% - 8px) 100%, 0% 100%);
+  }
+  .btn-ghost:hover {
+    border-color: var(--accent);
+    background: rgba(0,245,255,0.05);
+    transform: translateY(-2px);
+  }
+
+  /* Floating circles bg */
+  .orb {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(80px);
+    pointer-events: none;
+    animation: orbFloat 8s ease-in-out infinite alternate;
+  }
+  .orb1 { width: 400px; height: 400px; background: rgba(0,245,255,0.06); top: -100px; left: -100px; }
+  .orb2 { width: 300px; height: 300px; background: rgba(255,45,120,0.06); bottom: -50px; right: -50px; animation-delay: -4s; }
+  .orb3 { width: 250px; height: 250px; background: rgba(123,47,255,0.08); top: 40%; left: 60%; animation-delay: -2s; }
+
+  /* ── ROBOT SECTION ── */
+  #robot {
+    position: relative;
+    z-index: 1;
+    padding: 100px 48px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 80px;
+    align-items: center;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .robot-visual {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .robot-ring {
+    position: absolute;
+    border-radius: 50%;
+    border: 1px solid rgba(0,245,255,0.15);
+    animation: spin 20s linear infinite;
+  }
+  .ring1 { width: 340px; height: 340px; }
+  .ring2 { width: 420px; height: 420px; border-color: rgba(255,45,120,0.1); animation-direction: reverse; animation-duration: 30s; }
+
+  /* SVG Robot */
+  .robot-svg-wrap {
+    position: relative;
+    z-index: 2;
+    animation: robotFloat 4s ease-in-out infinite;
+    filter: drop-shadow(0 0 30px rgba(0,245,255,0.3));
+  }
+
+  .robot-info { padding: 20px 0; }
+
+  .section-label {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.5em;
+    color: var(--accent2);
+    text-transform: uppercase;
+    margin-bottom: 16px;
+  }
+
+  .robot-name {
+    font-family: 'Orbitron', monospace;
+    font-size: clamp(2rem, 4vw, 3rem);
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 20px;
+  }
+
+  .robot-desc {
+    font-size: 1rem;
+    color: var(--muted);
+    line-height: 1.8;
+    margin-bottom: 32px;
+  }
+
+  .specs-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 32px;
+  }
+
+  .spec-item {
+    background: var(--panel);
+    border: 1px solid rgba(0,245,255,0.1);
+    padding: 12px 16px;
+    clip-path: polygon(6px 0%, 100% 0%, calc(100% - 6px) 100%, 0% 100%);
+  }
+
+  .spec-label {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.6rem;
+    letter-spacing: 0.3em;
+    color: var(--muted);
+    text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+
+  .spec-val {
+    font-family: 'Orbitron', monospace;
+    font-size: 0.9rem;
+    color: var(--accent);
+  }
+
+  /* ── DIVIDER ── */
+  .divider {
+    position: relative;
+    z-index: 1;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 48px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+  }
+  .divider-line { flex: 1; height: 1px; background: linear-gradient(90deg, transparent, rgba(0,245,255,0.2), transparent); }
+  .divider-text { font-family: 'Share Tech Mono', monospace; font-size: 0.65rem; color: var(--muted); letter-spacing: 0.4em; text-transform: uppercase; white-space: nowrap; }
+
+  /* ── TEAM ── */
+  #team {
+    position: relative;
+    z-index: 1;
+    padding: 100px 48px;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .section-header {
+    text-align: center;
+    margin-bottom: 72px;
+  }
+
+  .section-title {
+    font-family: 'Orbitron', monospace;
+    font-size: clamp(2rem, 4vw, 3rem);
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 16px;
+  }
+
+  .section-sub {
+    font-size: 0.95rem;
+    color: var(--muted);
+    max-width: 480px;
+    margin: 0 auto;
+  }
+
+  .team-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 24px;
+  }
+
+  .member-card {
+    background: var(--panel);
+    border: 1px solid rgba(0,245,255,0.08);
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.3s, border-color 0.3s;
+    clip-path: polygon(0 0, calc(100% - 20px) 0, 100% 20px, 100% 100%, 20px 100%, 0 calc(100% - 20px));
+  }
+
+  .member-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(0,245,255,0.04) 0%, transparent 60%);
+    pointer-events: none;
+  }
+
+  .member-card:hover {
+    transform: translateY(-6px);
+    border-color: rgba(0,245,255,0.3);
+    box-shadow: 0 20px 60px rgba(0,0,0,0.5), var(--glow);
+  }
+
+  .member-card:nth-child(2):hover { border-color: rgba(255,45,120,0.3); box-shadow: 0 20px 60px rgba(0,0,0,0.5), var(--glow2); }
+  .member-card:nth-child(3):hover { border-color: rgba(123,47,255,0.3); }
+
+  .member-img-wrap {
+    position: relative;
+    height: 220px;
+    overflow: hidden;
+  }
+
+  .member-img-wrap img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: grayscale(30%) contrast(1.1);
+    transition: filter 0.3s, transform 0.3s;
+  }
+
+  .member-card:hover .member-img-wrap img {
+    filter: grayscale(0%) contrast(1.0);
+    transform: scale(1.04);
+  }
+
+  .member-img-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to bottom, transparent 50%, var(--panel) 100%);
+  }
+
+  .member-accent {
+    position: absolute;
+    top: 0; left: 0;
+    width: 3px;
+    height: 100%;
+    background: var(--accent);
+  }
+  .member-card:nth-child(2) .member-accent { background: var(--accent2); }
+  .member-card:nth-child(3) .member-accent { background: var(--accent3); }
+  .member-card:nth-child(4) .member-accent { background: #ffaa00; }
+
+  .member-body { padding: 20px 24px 24px; }
+
+  .member-role {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.6rem;
+    letter-spacing: 0.35em;
+    color: var(--accent);
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+  .member-card:nth-child(2) .member-role { color: var(--accent2); }
+  .member-card:nth-child(3) .member-role { color: var(--accent3); }
+  .member-card:nth-child(4) .member-role { color: #ffaa00; }
+
+  .member-name {
+    font-family: 'Orbitron', monospace;
+    font-size: 1rem;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 12px;
+    letter-spacing: 0.05em;
+  }
+
+  .member-bio {
+    font-size: 0.85rem;
+    color: var(--muted);
+    line-height: 1.7;
+    margin-bottom: 16px;
+  }
+
+  .member-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  .tag {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.58rem;
+    padding: 3px 8px;
+    border: 1px solid rgba(0,245,255,0.15);
+    color: var(--muted);
+    letter-spacing: 0.1em;
+  }
+
+  /* ── FOOTER ── */
+  footer {
+    position: relative;
+    z-index: 1;
+    padding: 48px;
+    border-top: 1px solid rgba(0,245,255,0.08);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .footer-logo {
+    font-family: 'Orbitron', monospace;
+    font-size: 1.2rem;
+    font-weight: 900;
+    color: var(--accent);
+    letter-spacing: 0.15em;
+  }
+
+  .footer-copy {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.65rem;
+    color: var(--muted);
+    letter-spacing: 0.2em;
+  }
+
+  /* ── STATUS BAR ── */
+  .status-bar {
+    position: fixed;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 500;
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    background: rgba(10,16,32,0.9);
+    border: 1px solid rgba(0,245,255,0.12);
+    padding: 10px 24px;
+    backdrop-filter: blur(12px);
+    clip-path: polygon(8px 0%, 100% 0%, calc(100% - 8px) 100%, 0% 100%);
+  }
+
+  .status-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.6rem;
+    color: var(--muted);
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+  }
+
+  .status-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--accent);
+    box-shadow: 0 0 6px var(--accent);
+    animation: pulse 2s ease-in-out infinite;
+  }
+
+  /* ── ANIMATIONS ── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes orbFloat {
+    from { transform: translate(0, 0) scale(1); }
+    to { transform: translate(30px, -30px) scale(1.1); }
+  }
+
+  @keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+  }
+
+  @keyframes robotFloat {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-16px); }
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
+  }
+
+  @keyframes scanline {
+    0% { top: -4px; }
+    100% { top: 100%; }
+  }
+
+  /* Scan animation on robot img wrap */
+  .member-img-wrap::after {
+    content: '';
+    position: absolute;
+    left: 0; right: 0;
+    height: 4px;
+    background: linear-gradient(transparent, rgba(0,245,255,0.3), transparent);
+    top: -4px;
+    animation: scanline 3s linear infinite;
+  }
+
+  /* ── SOCIAL LINKS ── */
+  .member-socials {
+    display: flex;
+    gap: 10px;
+    margin-top: 14px;
+    padding-top: 14px;
+    border-top: 1px solid rgba(0,245,255,0.08);
+  }
+
+  .social-link {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.6rem;
+    letter-spacing: 0.15em;
+    color: var(--muted);
+    text-decoration: none;
+    padding: 5px 10px;
+    border: 1px solid rgba(255,255,255,0.06);
+    transition: all 0.2s;
+    cursor: none;
+  }
+  .social-link:hover {
+    color: #fff;
+    border-color: rgba(0,245,255,0.3);
+    background: rgba(0,245,255,0.05);
+    text-shadow: 0 0 8px rgba(0,245,255,0.4);
+  }
+  .social-link svg {
+    width: 12px;
+    height: 12px;
+    fill: currentColor;
+    flex-shrink: 0;
+  }
+
+  /* Footer socials */
+  .footer-socials {
+    display: flex;
+    gap: 16px;
+    align-items: center;
+  }
+
+  .footer-social-link {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.2em;
+    color: var(--muted);
+    text-decoration: none;
+    text-transform: uppercase;
+    transition: color 0.2s;
+    cursor: none;
+  }
+  .footer-social-link svg { width: 14px; height: 14px; fill: currentColor; }
+  .footer-social-link:hover { color: var(--accent); text-shadow: var(--glow); }
+  .footer-social-link.yt:hover { color: #ff4444; text-shadow: 0 0 12px rgba(255,68,68,0.5); }
+  .footer-social-link.ig:hover { color: #e1306c; text-shadow: 0 0 12px rgba(225,48,108,0.5); }
+
+  /* ── CORNER DECO ── */
+  .corner-deco {
+    position: absolute;
+    width: 20px; height: 20px;
+  }
+  .corner-deco::before, .corner-deco::after { content: ''; position: absolute; background: var(--accent); }
+  .corner-deco.tl { top: 0; left: 0; }
+  .corner-deco.tl::before { width: 2px; height: 100%; top: 0; left: 0; }
+  .corner-deco.tl::after { width: 100%; height: 2px; top: 0; left: 0; }
+  .corner-deco.br { bottom: 0; right: 0; }
+  .corner-deco.br::before { width: 2px; height: 100%; bottom: 0; right: 0; }
+  .corner-deco.br::after { width: 100%; height: 2px; bottom: 0; right: 0; }
+</style>
+</head>
+<body>
+
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">TEAM <span>VOLTIX</span></div>
+  <ul class="nav-links">
+    <li><a href="#robot">Robot</a></li>
+    <li><a href="#team">Team</a></li>
+    <li><a href="#">Contact</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="orb orb1"></div>
+  <div class="orb orb2"></div>
+  <div class="orb orb3"></div>
+
+  <p class="hero-eyebrow">National Robotic League · 2026</p>
+  <h1 class="hero-title">
+    <span class="line1">TEAM</span>
+    <span class="line2">VOLTIX</span>
+  </h1>
+  <p class="hero-sub">some caption here please tell me</p>
+  <div class="hero-cta">
+    <a href="#robot" class="btn btn-primary">Meet the Robot</a>
+    <a href="#team" class="btn btn-ghost">The Crew</a>
+  </div>
+</section>
+
+<!-- ROBOT SECTION -->
+<section id="robot">
+  <div class="robot-visual">
+    <div class="robot-ring ring1"></div>
+    <div class="robot-ring ring2"></div>
+    <div class="robot-svg-wrap">
+      <svg width="260" height="320" viewBox="0 0 260 320" xmlns="http://www.w3.org/2000/svg">
+        <!-- Body -->
+        <rect x="60" y="120" width="140" height="120" rx="12" fill="#0d1628" stroke="#00f5ff" stroke-width="1.5"/>
+        <!-- Chest panel -->
+        <rect x="80" y="140" width="100" height="60" rx="6" fill="#050810" stroke="#00f5ff" stroke-width="1" stroke-opacity="0.4"/>
+        <!-- Core light -->
+        <circle cx="130" cy="170" r="18" fill="none" stroke="#00f5ff" stroke-width="1.5" opacity="0.6"/>
+        <circle cx="130" cy="170" r="10" fill="#00f5ff" opacity="0.8"/>
+        <circle cx="130" cy="170" r="5" fill="#fff"/>
+        <!-- Chest dots -->
+        <circle cx="98" cy="160" r="4" fill="#ff2d78" opacity="0.8"/>
+        <circle cx="98" cy="175" r="4" fill="#7b2fff" opacity="0.8"/>
+        <circle cx="98" cy="190" r="4" fill="#00f5ff" opacity="0.8"/>
+        <!-- Vent lines -->
+        <line x1="155" y1="155" x2="172" y2="155" stroke="#00f5ff" stroke-width="1" opacity="0.4"/>
+        <line x1="155" y1="162" x2="172" y2="162" stroke="#00f5ff" stroke-width="1" opacity="0.4"/>
+        <line x1="155" y1="169" x2="172" y2="169" stroke="#00f5ff" stroke-width="1" opacity="0.4"/>
+        <line x1="155" y1="176" x2="172" y2="176" stroke="#00f5ff" stroke-width="1" opacity="0.4"/>
+        <line x1="155" y1="183" x2="172" y2="183" stroke="#00f5ff" stroke-width="1" opacity="0.4"/>
+
+        <!-- Head -->
+        <rect x="75" y="40" width="110" height="72" rx="16" fill="#0d1628" stroke="#00f5ff" stroke-width="1.5"/>
+        <!-- Visor -->
+        <rect x="85" y="52" width="90" height="30" rx="8" fill="#050810" stroke="#00f5ff" stroke-width="1" opacity="0.6"/>
+        <!-- Eyes -->
+        <ellipse cx="108" cy="67" rx="12" ry="8" fill="#00f5ff" opacity="0.9"/>
+        <ellipse cx="108" cy="67" rx="6" ry="4" fill="#fff"/>
+        <ellipse cx="152" cy="67" rx="12" ry="8" fill="#00f5ff" opacity="0.9"/>
+        <ellipse cx="152" cy="67" rx="6" ry="4" fill="#fff"/>
+        <!-- Antenna -->
+        <line x1="130" y1="40" x2="130" y2="18" stroke="#00f5ff" stroke-width="2"/>
+        <circle cx="130" cy="14" r="5" fill="#ff2d78" opacity="0.9">
+          <animate attributeName="opacity" values="0.9;0.2;0.9" dur="1.5s" repeatCount="indefinite"/>
+        </circle>
+        <!-- Mouth -->
+        <rect x="95" y="88" width="70" height="14" rx="4" fill="#050810" stroke="#00f5ff" stroke-width="1" opacity="0.5"/>
+        <rect x="100" y="91" width="10" height="8" rx="2" fill="#00f5ff" opacity="0.6"/>
+        <rect x="115" y="91" width="10" height="8" rx="2" fill="#00f5ff" opacity="0.6"/>
+        <rect x="130" y="91" width="10" height="8" rx="2" fill="#00f5ff" opacity="0.6"/>
+        <rect x="145" y="91" width="10" height="8" rx="2" fill="#00f5ff" opacity="0.6"/>
+
+        <!-- Arms -->
+        <rect x="20" y="125" width="36" height="80" rx="10" fill="#0d1628" stroke="#00f5ff" stroke-width="1.5"/>
+        <rect x="204" y="125" width="36" height="80" rx="10" fill="#0d1628" stroke="#00f5ff" stroke-width="1.5"/>
+        <!-- Arm joints -->
+        <circle cx="38" cy="125" r="8" fill="#050810" stroke="#00f5ff" stroke-width="1.5"/>
+        <circle cx="222" cy="125" r="8" fill="#050810" stroke="#00f5ff" stroke-width="1.5"/>
+        <!-- Hands -->
+        <rect x="18" y="200" width="40" height="28" rx="8" fill="#0d1628" stroke="#ff2d78" stroke-width="1.5"/>
+        <rect x="202" y="200" width="40" height="28" rx="8" fill="#0d1628" stroke="#ff2d78" stroke-width="1.5"/>
+
+        <!-- Legs -->
+        <rect x="78" y="238" width="44" height="64" rx="10" fill="#0d1628" stroke="#00f5ff" stroke-width="1.5"/>
+        <rect x="138" y="238" width="44" height="64" rx="10" fill="#0d1628" stroke="#00f5ff" stroke-width="1.5"/>
+        <!-- Knee joints -->
+        <rect x="80" y="274" width="40" height="8" rx="3" fill="#050810" stroke="#00f5ff" stroke-width="1" opacity="0.6"/>
+        <rect x="140" y="274" width="40" height="8" rx="3" fill="#050810" stroke="#00f5ff" stroke-width="1" opacity="0.6"/>
+        <!-- Feet -->
+        <rect x="70" y="298" width="58" height="20" rx="6" fill="#0d1628" stroke="#7b2fff" stroke-width="1.5"/>
+        <rect x="132" y="298" width="58" height="20" rx="6" fill="#0d1628" stroke="#7b2fff" stroke-width="1.5"/>
+
+        <!-- Neck connector -->
+        <rect x="110" y="108" width="40" height="16" rx="4" fill="#0a1020" stroke="#00f5ff" stroke-width="1" opacity="0.7"/>
+        <!-- Shoulder connectors -->
+        <rect x="54" y="130" width="10" height="20" rx="3" fill="#0a1020" stroke="#00f5ff" stroke-width="1" opacity="0.5"/>
+        <rect x="196" y="130" width="10" height="20" rx="3" fill="#0a1020" stroke="#00f5ff" stroke-width="1" opacity="0.5"/>
+
+        <!-- Glow aura -->
+        <ellipse cx="130" cy="318" rx="70" ry="8" fill="#00f5ff" opacity="0.08"/>
+      </svg>
+    </div>
+  </div>
+
+  <div class="robot-info">
+    <p class="section-label">Meet Our Robot</p>
+    <h2 class="robot-name">Voltixy</h2>
+    <p class="robot-desc">
+      A compact and powerful robot engineered to tackle challenges with precision and agility. With efficient energy usage, quick response time, and robust design, it stands out as a reliable and high-performing machine.
+    </p>
+  
+</section>
+
+<!-- DIVIDER -->
+<div class="divider">
+  <div class="divider-line"></div>
+  <div class="divider-text">The Crew</div>
+  <div class="divider-line"></div>
+</div>
+
+<!-- TEAM -->
+<section id="team">
+  <div class="section-header">
+    <p class="section-label">Agents of Chaos</p>
+    <h2 class="section-title">The Team</h2>
+    <p class="section-sub">some caption here</p>
+  </div>
+
+  <div class="team-grid">
+
+    <!-- Member 1 -->
+    <div class="member-card">
+      <div class="member-accent"></div>
+      <div class="corner-deco tl"></div>
+      <div class="member-img-wrap">
+        <img src="pfp.jpeg" alt="Alex Mercer">
+        <div class="member-img-overlay"></div>
+      </div>
+      <div class="member-body">
+        <div class="member-role">Team Leader</div>
+        <div class="member-name">Advik Shekar Bandi</div>
+        <p class="member-bio">something something blah blah blah</p>
+        <div class="member-tags">
+          <span class="tag">CAD/CAM</span>
+          <span class="tag">Fabrication</span>
+          <span class="tag">Systems</span>
+        </div>
+        <div class="member-socials">
+          <a href="https://instagram.com/teamxyz" target="_blank" class="social-link"><svg viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>IG</a>
+          <a href="https://youtube.com/@teamxyz" target="_blank" class="social-link"><svg viewBox="0 0 24 24"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>YT</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Member 2 -->
+    <div class="member-card">
+      <div class="member-accent"></div>
+      <div class="corner-deco tl"></div>
+      <div class="member-img-wrap">
+        <img src="pfp.jpeg" alt="Priya Nair">
+        <div class="member-img-overlay"></div>
+      </div>
+      <div class="member-body">
+        <div class="member-role">Progammer</div>
+        <div class="member-name">Aarav Kumar</div>
+        <p class="member-bio">something something blah blah blah</p>
+        <div class="member-tags">
+          <span class="tag">Python</span>
+          <span class="tag">ROS2</span>
+          <span class="tag">Computer Vision</span>
+        </div>
+        <div class="member-socials">
+          <a href="https://instagram.com/teamxyz" target="_blank" class="social-link"><svg viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>IG</a>
+          <a href="https://youtube.com/@teamxyz" target="_blank" class="social-link"><svg viewBox="0 0 24 24"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>YT</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Member 3 -->
+    <div class="member-card">
+      <div class="member-accent"></div>
+      <div class="corner-deco tl"></div>
+      <div class="member-img-wrap">
+        <img src="pfp.jpeg" alt="Jordan Lee">
+        <div class="member-img-overlay"></div>
+      </div>
+      <div class="member-body">
+        <div class="member-role">The Portfolio Master</div>
+        <div class="member-name">Nikunj Agarwal</div>
+        <p class="member-bio">something something blah blah blah</p>
+        <div class="member-tags">
+          <span class="tag">C/C++</span>
+          <span class="tag">PCB Design</span>
+          <span class="tag">Embedded</span>
+        </div>
+        <div class="member-socials">
+          <a href="https://instagram.com/teamxyz" target="_blank" class="social-link"><svg viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>IG</a>
+          <a href="https://youtube.com/@teamxyz" target="_blank" class="social-link"><svg viewBox="0 0 24 24"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>YT</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Member 4 -->
+    <div class="member-card">
+      <div class="member-accent"></div>
+      <div class="corner-deco tl"></div>
+      <div class="member-img-wrap">
+        <img src="pfp.jpeg" alt="Sam Torres">
+        <div class="member-img-overlay"></div>
+      </div>
+      <div class="member-body">
+        <div class="member-role">Driver and Hardware</div>
+        <div class="member-name">Soham Nagarkar</div>
+        <p class="member-bio">something something blah blah blah</p>
+        <div class="member-tags">
+          <span class="tag">Strategy</span>
+          <span class="tag">Analysis</span>
+          <span class="tag">Logistics</span>
+        </div>
+        <div class="member-socials">
+          <a href="https://instagram.com/teamxyz" target="_blank" class="social-link"><svg viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>IG</a>
+          <a href="https://youtube.com/@teamxyz" target="_blank" class="social-link"><svg viewBox="0 0 24 24"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>YT</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Member 5 -->
+    <div class="member-card">
+      <div class="member-accent"></div>
+      <div class="corner-deco tl"></div>
+      <div class="member-img-wrap">
+        <img src="pfp.jpeg" alt="Kai Okafor">
+        <div class="member-img-overlay"></div>
+      </div>
+      <div class="member-body">
+        <div class="member-role">Portfolio</div>
+        <div class="member-name">Vivaan Mhatre</div>
+        <p class="member-bio">something something blah blah blah</p>
+        <div class="member-tags">
+          <span class="tag">Control Theory</span>
+          <span class="tag">MATLAB</span>
+          <span class="tag">Path Planning</span>
+        </div>
+        <div class="member-socials">
+          <a href="https://instagram.com/teamxyz" target="_blank" class="social-link"><svg viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>IG</a>
+          <a href="https://youtube.com/@teamxyz" target="_blank" class="social-link"><svg viewBox="0 0 24 24"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>YT</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Member 6 -->
+    <div class="member-card">
+      <div class="member-accent"></div>
+      <div class="corner-deco tl"></div>
+      <div class="member-img-wrap">
+        <img src="pfp.jpeg" alt="Zara Chen">
+        <div class="member-img-overlay"></div>
+      </div>
+      <div class="member-body">
+        <div class="member-role">Social Media</div>
+        <div class="member-name">Idhika Garg</div>
+        <p class="member-bio">something something blah blah blah</p>
+        <div class="member-tags">
+          <span class="tag">LiDAR</span>
+          <span class="tag">SLAM</span>
+          <span class="tag">OpenCV</span>
+        </div>
+        <div class="member-socials">
+          <a href="https://instagram.com/teamxyz" target="_blank" class="social-link"><svg viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>IG</a>
+          <a href="https://youtube.com/@teamxyz" target="_blank" class="social-link"><svg viewBox="0 0 24 24"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>YT</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Member 7 -->
+    <div class="member-card">
+      <div class="member-accent"></div>
+      <div class="corner-deco tl"></div>
+      <div class="member-img-wrap">
+        <img src="pfp.jpeg" alt="Riya Patel">
+        <div class="member-img-overlay"></div>
+      </div>
+      <div class="member-body">
+        <div class="member-role">Social Media</div>
+        <div class="member-name">Shanaya Siddhartha</div>
+        <p class="member-bio">something something blah blah blah</p>
+        <div class="member-tags">
+          <span class="tag">Battery Mgmt</span>
+          <span class="tag">Power Electronics</span>
+          <span class="tag">Wiring</span>
+        </div>
+        <div class="member-socials">
+          <a href="https://instagram.com/teamxyz" target="_blank" class="social-link"><svg viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>IG</a>
+          <a href="https://youtube.com/@teamxyz" target="_blank" class="social-link"><svg viewBox="0 0 24 24"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>YT</a>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">Voltixy</div>
+  <div class="footer-socials">
+    <a href="https://instagram.com/teamxyz" target="_blank" class="footer-social-link ig">
+      <svg viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+      Instagram
+    </a>
+    <a href="https://youtube.com/@teamxyz" target="_blank" class="footer-social-link yt">
+      <svg viewBox="0 0 24 24"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
+      YouTube
+    </a>
+  </div>
+  <div class="footer-copy">© 2026 TEAM VOLTIX</div>
+</footer>
+
+<!-- STATUS BAR -->
+<div class="status-bar">
+  <div class="status-item"><div class="status-dot"></div> Systems Online</div>
+  <div class="status-item">National Robotics League 2026</div>
+  <div class="status-item">· TEAM VOLTIX</div>
+</div>
+
+<script>
+  // Custom cursor
+  const cursor = document.getElementById('cursor');
+  const ring = document.getElementById('cursorRing');
+  let mx = 0, my = 0, rx = 0, ry = 0;
+
+  document.addEventListener('mousemove', e => {
+    mx = e.clientX; my = e.clientY;
+    cursor.style.left = mx + 'px';
+    cursor.style.top = my + 'px';
+  });
+
+  function animateRing() {
+    rx += (mx - rx) * 0.12;
+    ry += (my - ry) * 0.12;
+    ring.style.left = rx + 'px';
+    ring.style.top = ry + 'px';
+    requestAnimationFrame(animateRing);
+  }
+  animateRing();
+
+  document.querySelectorAll('a, button').forEach(el => {
+    el.addEventListener('mouseenter', () => {
+      cursor.style.width = '20px';
+      cursor.style.height = '20px';
+      ring.style.width = '52px';
+      ring.style.height = '52px';
+    });
+    el.addEventListener('mouseleave', () => {
+      cursor.style.width = '12px';
+      cursor.style.height = '12px';
+      ring.style.width = '36px';
+      ring.style.height = '36px';
+    });
+  });
+
+  // Scroll reveal for cards
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach((e, i) => {
+      if (e.isIntersecting) {
+        setTimeout(() => {
+          e.target.style.opacity = '1';
+          e.target.style.transform = 'translateY(0)';
+        }, i * 100);
+        observer.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.1 });
+
+  document.querySelectorAll('.member-card').forEach(card => {
+    card.style.opacity = '0';
+    card.style.transform = 'translateY(40px)';
+    card.style.transition = 'opacity 0.6s ease, transform 0.6s ease, border-color 0.3s';
+    observer.observe(card);
+  });
+</script>
+</body>
+</html>
